@@ -12,9 +12,9 @@ const passport = require("passport")   // 引入 passport 验证 token
 // $route   Post api/user/register
 // @desc    用于测试接口
 // @access  public 
-// router.get("/test", (req, res) => {
-//     res.json({ msg: "ok" })
-// })
+router.get("/test", (req, res) => {
+    res.json({ msg: "ok" })
+})
 
 // $route   Post api/user/register
 // @desc    注册成功返回用户 json 数据, 否则返回
@@ -22,17 +22,17 @@ const passport = require("passport")   // 引入 passport 验证 token
 router.post("/register", (req, res) => {
     //res.json({msg: "ok"})
     console.log(req.body)
-    User.findOne({ email: req.query.email }).then(user => {
+    User.findOne({ email: req.body.email }).then(user => {
         if (user) {
             return res.status(400).json("邮箱已被注册!")
         } else {
-            var g = gravatar.url(req.query.email, { s: '200', r: 'pg', d: 'mm' });
+            let g = gravatar.url(req.body.email, { s: '200', r: 'pg', d: 'mm' });
             const newUser = new User({
-                name: req.query.name,
-                email: req.query.email,
+                name: req.body.name,
+                email: req.body.email,
                 avatar: g,
-                password: req.query.password,
-                identity: req.query.identity
+                password: req.body.password,
+                identity: req.body.identity
             })
             bcrypt.genSalt(10, function (err, salt) {
                 bcrypt.hash(newUser.password, salt, function (err, hash) {
@@ -59,8 +59,8 @@ router.post("/register", (req, res) => {
 // @access  public 
 
 router.post("/login", (req, res) => {
-    const email = req.query.email
-    const password = req.query.password
+    const email = req.body.email
+    const password = req.body.password
     User.findOne({ email })
         .then(user => {
             if (!user) {

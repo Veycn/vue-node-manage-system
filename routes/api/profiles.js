@@ -78,12 +78,12 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     const profileFields = {};
-    // profileFields.type = query.type ? query.type : ''
-    // profileFields.describe = query.describe ? query.describe : ''
-    // profileFields.income = query.income ? query.income : ''
-    // profileFields.expend =  query.expend ? query.expend : ''
-    // profileFields.cash =  query.cash ? query.cash : ''
-    // profileFields.remark =  query.remark ?　query.remark　: ''
+    if (req.body.type) profileFields.type = req.body.type;
+    if (req.body.describe) profileFields.describe = req.body.describe;
+    if (req.body.income) profileFields.income = req.body.income;
+    if (req.body.expend) profileFields.expend = req.body.expend;
+    if (req.body.cash) profileFields.cash = req.body.cash;
+    if (req.body.remark) profileFields.remark = req.body.remark;
     Profile.findOneAndUpdate(
       { _id: req.params.id },
       { $set: profileFields },
@@ -97,10 +97,10 @@ router.post(
 // @desc   删除信息
 // @access  private
 router.delete(
-  "delete/:id",
+  "/delete/:id",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
-    Profile.findOneAndRemove({ _id: req.params.id })
+    Profile.findOneAndDelete({ _id: req.params.id })
       .then(profile => {
         profile.save()
           .then(profile => res.json(profile))
